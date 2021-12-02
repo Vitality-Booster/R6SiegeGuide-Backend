@@ -25,7 +25,7 @@ public class User {
     @Column(unique=true)
     private String email;
 
-    private boolean admin;
+    private boolean admin = false;
     private String password;
 
 }
