@@ -17,7 +17,7 @@ public class UserService implements IUserService {
     private final IUserRepository userRepository;
 
     // should I initialize it using Bean?
-    private BCryptPasswordEncoder passwordEncoder;
+    private static BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     public UserService(IUserRepository userRepository) {
         this.userRepository = userRepository;
@@ -95,10 +95,16 @@ public class UserService implements IUserService {
             throw new IllegalArgumentException("A user with these email or username already exist");
         }
         else {
-            userRepository.save(user);
+            // creating another User so that I could return a user with not a hashed password
+            System.out.println(model.getPassword());
+            String newPassword = passwordEncoder.encode(model.getPassword());
+            System.out.println(newPassword);
+            model.setPassword(newPassword);
+            userRepository.save(model);
         }
 
-        return CompletableFuture.completedFuture(user);
+        // decide what actually I need to return
+        return CompletableFuture.completedFuture(model);
     }
 
     @Override
@@ -109,11 +115,12 @@ public class UserService implements IUserService {
             throw new NotFoundException("A user with this email does not exist");
         }
         else {
-            if (!model.getPassword().equals(user.getPassword())) {
+            if (!passwordEncoder.matches(model.getPassword(), user.getPassword())) {
                 throw new IllegalArgumentException("This password is incorrect");
             }
         }
 
+        // decide what actually I need to return
         return CompletableFuture.completedFuture(user);
     }
 

@@ -12,60 +12,35 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final IUserService userService;
-    private final IUserRepository userRepository;
 
     public UserController(IUserRepository userRepository, IUserService userService) {
         this.userService = userService;
-        this.userRepository = userRepository;
     }
 
     @PostMapping("/login")
-    public ResponseEntity loginUser(@RequestBody User user) {
+    public ResponseEntity loginUser(@RequestBody User model) {
 
-        User checkUser = userRepository.findUserByEmail(user.getEmail());
-        if (checkUser != null) {
-            if (checkUser.getPassword().equals(user.getPassword())) {
-                return new ResponseEntity(checkUser, HttpStatus.OK);
-            }
+        try {
+            User user = userService.loginUser(model).get();
 
+            return ResponseEntity.status(HttpStatus.OK).body(user);
         }
-
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-//        User logedUser = userService.findUser(user.getEmail());
-//
-//        if (logedUser == null) {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-//        }
-//        return new ResponseEntity(logedUser, HttpStatus.OK);
+        catch(Exception ex) {
+            return new ResponseEntity(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/register")
-    public ResponseEntity registerUser(@RequestBody User user) {
-
-//        System.out.println(request.getFullName() + ", " + request.getPassword());
-        System.out.println(user);
-
+    public ResponseEntity registerUser(@RequestBody User model) {
+        System.out.println(model);
         try {
-            User checkUser = userRepository.findUserByEmail(user.getEmail());
-
-            if (checkUser == null) {
-                User checkUser2 = userRepository.findUserByUsername(user.getUsername());
-
-                if (checkUser2 == null) {
-                    userRepository.save(user);
-                    return new ResponseEntity(user, HttpStatus.OK);
-                }
-            }
-
-
+            User user = userService.registerUser(model).get();
+            
+            return ResponseEntity.status(HttpStatus.OK).body(user);
         }
-        catch (Exception ex) {
-            System.out.println(ex.getMessage());
+        catch(Exception ex) {
+            ex.printStackTrace();
+            return new ResponseEntity(ex.getMessage(), HttpStatus.BAD_REQUEST);
         }
-        return ResponseEntity.status(HttpStatus.OK).body(null);
-//        if (userService.addUser(user)) {
-//            return ResponseEntity.status(HttpStatus.OK).body(user);
-//        }
-//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
 }
