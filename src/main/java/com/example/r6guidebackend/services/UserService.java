@@ -51,7 +51,7 @@ public class UserService implements IUserService {
         User user = findUser(model).get();
 
         if (user != null) {
-            throw new IllegalArgumentException("A user with these email or username already exist");
+            throw new IllegalArgumentException("A user with these email or username already exists");
         }
         else {
             userRepository.save(model);
@@ -67,6 +67,8 @@ public class UserService implements IUserService {
         if (user == null) {
             throw new NotFoundException("This user does not exist");
         }
+
+        userRepository.save(user);
 
         // do some changes to user info
 
@@ -92,7 +94,7 @@ public class UserService implements IUserService {
         User user = findUser(model).get();
 
         if (user != null) {
-            throw new IllegalArgumentException("A user with these email or username already exist");
+            throw new IllegalArgumentException("A user with these email or username already exists");
         }
         else {
             // creating another User so that I could return a user with not a hashed password
