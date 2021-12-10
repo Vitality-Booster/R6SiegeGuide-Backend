@@ -1,12 +1,14 @@
 package com.example.r6guidebackend.services;
 
 import com.example.r6guidebackend.models.User;
+import com.example.r6guidebackend.models.responses.LoginResponse;
 import com.example.r6guidebackend.repositories.IUserRepository;
 import com.example.r6guidebackend.services.interfaces.IUserService;
 import javassist.NotFoundException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -15,9 +17,6 @@ import java.util.concurrent.CompletableFuture;
 public class UserService implements IUserService {
 
     private final IUserRepository userRepository;
-
-    // should I initialize it using Bean?
-    private static BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     public UserService(IUserRepository userRepository) {
         this.userRepository = userRepository;
@@ -90,40 +89,32 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public CompletableFuture<User> registerUser(User model) throws Exception {
+    public CompletableFuture<Void> registerUser(User model) throws Exception {
         User user = findUser(model).get();
 
         if (user != null) {
             throw new IllegalArgumentException("A user with these email or username already exists");
         }
         else {
-            // creating another User so that I could return a user with not a hashed password
-            System.out.println(model.getPassword());
-            String newPassword = passwordEncoder.encode(model.getPassword());
-            System.out.println(newPassword);
-            model.setPassword(newPassword);
             userRepository.save(model);
         }
 
         // decide what actually I need to return
-        return CompletableFuture.completedFuture(model);
+        return CompletableFuture.runAsync(() -> {});
     }
 
     @Override
-    public CompletableFuture<User> loginUser(User model) throws Exception {
+    public CompletableFuture<LoginResponse> loginUser(User model) throws Exception {
         User user = findUser(model).get();
 
         if (user == null) {
             throw new NotFoundException("A user with this email does not exist");
         }
-        else {
-            if (!passwordEncoder.matches(model.getPassword(), user.getPassword())) {
-                throw new IllegalArgumentException("This password is incorrect");
-            }
-        }
+
+        LoginResponse response = new LoginResponse(user.getUsername(), user.isAdmin());
 
         // decide what actually I need to return
-        return CompletableFuture.completedFuture(user);
+        return CompletableFuture.completedFuture(response);
     }
 
     private CompletableFuture<User> findUser(User model) {

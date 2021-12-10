@@ -22,9 +22,9 @@ public class UserController {
     public ResponseEntity loginUser(@RequestBody User model) {
 
         try {
-            User user = userService.loginUser(model).get();
+            var response = userService.loginUser(model).get();
 
-            return ResponseEntity.status(HttpStatus.OK).body(user);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
         }
         catch(Exception ex) {
             return new ResponseEntity(ex.getMessage(), HttpStatus.BAD_REQUEST);
@@ -35,9 +35,9 @@ public class UserController {
     public ResponseEntity registerUser(@RequestBody User model) {
         System.out.println(model);
         try {
-            User user = userService.registerUser(model).get();
+            userService.registerUser(model);
             
-            return ResponseEntity.status(HttpStatus.OK).body(user);
+            return ResponseEntity.status(HttpStatus.OK).body(null);
         }
         catch(Exception ex) {
             ex.printStackTrace();

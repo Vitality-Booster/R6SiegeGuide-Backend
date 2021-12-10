@@ -1,6 +1,7 @@
 package com.example.r6guidebackend.services.interfaces;
 
 import com.example.r6guidebackend.models.User;
+import com.example.r6guidebackend.models.responses.LoginResponse;
 import javassist.NotFoundException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -27,8 +28,8 @@ public interface IUserService {
     CompletableFuture<Void> deleteUser(User model) throws Exception;
 
     @Async
-    CompletableFuture<User> registerUser(User model) throws Exception;
+    CompletableFuture<Void> registerUser(User model) throws Exception;
 
     @Async
-    CompletableFuture<User> loginUser(User model) throws Exception;
+    CompletableFuture<LoginResponse> loginUser(User model) throws Exception;
 }
