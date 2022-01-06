@@ -115,7 +115,6 @@ public class UserService implements IUserService {
         CustomTokenResponse resp = new CustomTokenResponse();
         resp.setToken(customToken);
 
-        // decide what actually I need to return
         return CompletableFuture.completedFuture(resp);
     }
 
