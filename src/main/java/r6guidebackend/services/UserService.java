@@ -4,11 +4,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseToken;
 import com.google.firebase.auth.UserRecord;
 import r6guidebackend.models.User;
-import r6guidebackend.models.requests.GetTokenRequest;
 import r6guidebackend.models.requests.RegisterRequest;
-import r6guidebackend.models.responses.GetTokenResponse;
 import r6guidebackend.models.responses.LoginResponse;
 import r6guidebackend.models.responses.CustomTokenResponse;
+import r6guidebackend.services.interfaces.IFirebaseConfig;
 import r6guidebackend.repositories.IUserRepository;
 import r6guidebackend.services.interfaces.IUserService;
 import javassist.NotFoundException;
@@ -25,8 +24,9 @@ public class UserService implements IUserService {
 
     private final IUserRepository userRepository;
 
-    public UserService(IUserRepository userRepository) {
+    public UserService(IUserRepository userRepository, IFirebaseConfig firebaseConfig) {
         this.userRepository = userRepository;
+        firebaseConfig.setup();
     }
 
 

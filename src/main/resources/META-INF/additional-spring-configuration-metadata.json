@@ -1,0 +1,53 @@
+{
+  "properties": [
+    {
+      "name": "FIREBASE_TYPE",
+      "type": "java.lang.String",
+      "description": "Configures Firebase Type which is a part of Firebase Admin SDK private key."
+    },
+    {
+      "name": "FIREBASE_PROJECT_ID",
+      "type": "java.lang.String",
+      "description": "Configures Firebase Project ID which is a part of Firebase Admin SDK private key."
+    },
+    {
+      "name": "FIREBASE_PRIVATE_KEY_ID",
+      "type": "java.lang.String",
+      "description": "Configures Firebase Private Key ID which is a part of Firebase Admin SDK private key."
+    },
+    {
+      "name": "FIREBASE_PRIVATE_KEY",
+      "type": "java.lang.String",
+      "description": "Configures Firebase Private Key which is a part of Firebase Admin SDK private key."
+    },
+    {
+      "name": "FIREBASE_CLIENT_EMAIL",
+      "type": "java.lang.String",
+      "description": "Configures Firebase Client Email which is a part of Firebase Admin SDK private key."
+    },
+    {
+      "name": "FIREBASE_CLIENT_ID",
+      "type": "java.lang.String",
+      "description": "Configures Firebase Client ID which is a part of Firebase Admin SDK private key."
+    },
+    {
+      "name": "FIREBASE_AUTH_URI",
+      "type": "java.lang.String",
+      "description": "Configures Firebase Auth URI which is a part of Firebase Admin SDK private key."
+    },
+    {
+      "name": "FIREBASE_TOKEN_URI",
+      "type": "java.lang.String",
+      "description": "Configures Firebase Token URI which is a part of Firebase Admin SDK private key."
+    },
+    {
+      "name": "FIREBASE_AUTH_PROVIDER_X509_CERT_URL",
+      "type": "java.lang.String",
+      "description": "Configures Firebase Auth Provider X509 Cert URL which is a part of Firebase Admin SDK private key."
+    },
+    {
+      "name": "FIREBASE_CLIENT_X509_CERT_URL",
+      "type": "java.lang.String",
+      "description": "Configures Firebase Client X509 Cert URL which is a part of Firebase Admin SDK private key."
+    }
+  ] }
