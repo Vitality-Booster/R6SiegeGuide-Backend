@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ISightRepository extends JpaRepository<Sight, Integer> {
+    Sight findSightByName(String name);
+    boolean deleteSightBy(String name);
 }

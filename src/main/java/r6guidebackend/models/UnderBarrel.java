@@ -5,21 +5,19 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @Getter
 @Setter
 @ToString
-// Think about Constructor
 @NoArgsConstructor
-public class UnderBarrel {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
-    private String name;
+public class UnderBarrel extends WeaponLoadoutItem {
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.AUTO)
+//    private int id;
+//
+//    @Column(unique = true)
+//    private String name;
     private String description;
 }

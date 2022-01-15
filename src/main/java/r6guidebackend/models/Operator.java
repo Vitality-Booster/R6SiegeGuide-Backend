@@ -19,8 +19,9 @@ public class Operator
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
+
+    @Column(unique=true)
     private String name;
-    private int health;
     private String side;
     private String specialUnit;
     private int healthPoints;

@@ -18,6 +18,8 @@ public class Weapon {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
+
+    @Column(unique = true)
     private String name;
     private String type;
     private int damage;

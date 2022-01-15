@@ -49,5 +49,10 @@
       "name": "FIREBASE_CLIENT_X509_CERT_URL",
       "type": "java.lang.String",
       "description": "Configures Firebase Client X509 Cert URL which is a part of Firebase Admin SDK private key."
+    },
+    {
+      "name": "FIREBASE_STORAGE_BUCKET",
+      "type": "java.lang.String",
+      "description": "Description for FIREBASE_STORAGE_BUCKET."
     }
   ] }

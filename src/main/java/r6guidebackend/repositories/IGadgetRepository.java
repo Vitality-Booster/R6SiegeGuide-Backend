@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface IGadgetRepository extends JpaRepository<Gadget, Integer> {
+    Gadget findGadgetByName(String name);
+    boolean deleteGadgetByName(String name);
 }

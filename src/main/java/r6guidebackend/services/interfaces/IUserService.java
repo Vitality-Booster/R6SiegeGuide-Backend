@@ -2,7 +2,9 @@ package r6guidebackend.services.interfaces;
 
 import r6guidebackend.models.User;
 import r6guidebackend.models.requests.GetTokenRequest;
+import r6guidebackend.models.requests.LoginRequest;
 import r6guidebackend.models.requests.RegisterRequest;
+import r6guidebackend.models.requests.VerifyTokenRequest;
 import r6guidebackend.models.responses.GetTokenResponse;
 import r6guidebackend.models.responses.LoginResponse;
 import org.springframework.scheduling.annotation.Async;
@@ -33,10 +35,10 @@ public interface IUserService {
     CompletableFuture<CustomTokenResponse> registerUser(RegisterRequest model) throws Exception;
 
     @Async
-    CompletableFuture<LoginResponse> loginUser(User model) throws Exception;
+    CompletableFuture<CustomTokenResponse> loginUser(LoginRequest model) throws Exception;
 
     @Async
-    CompletableFuture<User> verifyUserByToken(String token) throws Exception;
+    CompletableFuture<Void> verifyUserByToken(VerifyTokenRequest model) throws Exception;
 
 //    @Async
 //    CompletableFuture<GetTokenResponse> createCustomToken(GetTokenRequest model) throws Exception;

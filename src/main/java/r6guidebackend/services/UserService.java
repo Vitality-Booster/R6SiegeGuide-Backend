@@ -4,8 +4,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseToken;
 import com.google.firebase.auth.UserRecord;
 import r6guidebackend.models.User;
+import r6guidebackend.models.requests.LoginRequest;
 import r6guidebackend.models.requests.RegisterRequest;
-import r6guidebackend.models.responses.LoginResponse;
+import r6guidebackend.models.requests.VerifyTokenRequest;
 import r6guidebackend.models.responses.CustomTokenResponse;
 import r6guidebackend.services.interfaces.IFirebaseConfig;
 import r6guidebackend.repositories.IUserRepository;
@@ -106,7 +107,7 @@ public class UserService implements IUserService {
         createRequest.setPassword(model.getPassword());
         FirebaseAuth.getInstance().createUser(createRequest);
 
-        // only if Firebase doesn't throw any exception then we can create a user in the database
+        // only if Firebase doesn't throw any exception then we will create a user in the database
         User user = new User(model.getFullName(), model.getEmail(), model.getUsername());
         userRepository.save(user);
 
@@ -119,27 +120,31 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public CompletableFuture<LoginResponse> loginUser(User model) throws Exception {
-        User user = findUser(model).get();
+    public CompletableFuture<CustomTokenResponse> loginUser(LoginRequest model) throws Exception {
+        var user = userRepository.findUserByEmail(model.getEmail());
 
         if (user == null) {
             throw new NotFoundException("A user with this email does not exist");
         }
 
-        LoginResponse response = new LoginResponse(user.getUsername(), user.isAdmin());
+        CustomTokenResponse response = new CustomTokenResponse();
 
-        // decide what actually I need to return
+        response.setToken(createCustomToken(user).get());
+
         return CompletableFuture.completedFuture(response);
     }
 
     @Override
-    public CompletableFuture<User> verifyUserByToken(String token) throws Exception {
-        FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(token);
-        String email = decodedToken.getEmail();
+    public CompletableFuture<Void> verifyUserByToken(VerifyTokenRequest model) throws Exception {
+        FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(model.getIdToken());
+        String uid = decodedToken.getUid();
+        var user = FirebaseAuth.getInstance().getUser(uid);
 
-        User user = userRepository.findUserByEmail(email);
+        if (user == null) {
+            throw new NotFoundException("The account that you are trying to use does not exist");
+        }
 
-        return CompletableFuture.completedFuture(user);
+        return CompletableFuture.runAsync(() -> {});
     }
 
     public CompletableFuture<String> createCustomToken(User user) throws Exception{

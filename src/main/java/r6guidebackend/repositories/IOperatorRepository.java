@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface IOperatorRepository extends JpaRepository<Operator, Integer> {
+    Operator findOperatorByName(String name);
+    boolean deleteOperatorByName(String name);
 }
