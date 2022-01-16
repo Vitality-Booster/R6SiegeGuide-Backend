@@ -135,16 +135,15 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public CompletableFuture<Void> verifyUserByToken(VerifyTokenRequest model) throws Exception {
+    public CompletableFuture<CustomTokenResponse> verifyUserByToken(VerifyTokenRequest model) throws Exception {
         FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(model.getIdToken());
-        String uid = decodedToken.getUid();
-        var user = FirebaseAuth.getInstance().getUser(uid);
+        String email = decodedToken.getEmail();
+        var user = userRepository.findUserByEmail(email);
+        String customToken = createCustomToken(user).get();
+        CustomTokenResponse response = new CustomTokenResponse();
+        response.setToken(customToken);
 
-        if (user == null) {
-            throw new NotFoundException("The account that you are trying to use does not exist");
-        }
-
-        return CompletableFuture.runAsync(() -> {});
+        return CompletableFuture.completedFuture(response);
     }
 
     public CompletableFuture<String> createCustomToken(User user) throws Exception{

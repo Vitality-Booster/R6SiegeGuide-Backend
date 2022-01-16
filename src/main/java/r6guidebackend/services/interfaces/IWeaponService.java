@@ -1,7 +1,6 @@
 package r6guidebackend.services.interfaces;
 
 import org.springframework.scheduling.annotation.Async;
-import r6guidebackend.models.DeleteWeaponRequest;
 import r6guidebackend.models.Weapon;
 import r6guidebackend.models.requests.GetWeaponRequest;
 
@@ -13,7 +12,7 @@ public interface IWeaponService {
     CompletableFuture<Weapon> getWeapon(GetWeaponRequest model);
 
     @Async
-    CompletableFuture<Void> deleteWeapon(DeleteWeaponRequest model);
+    CompletableFuture<Void> deleteWeapon(GetWeaponRequest.DeleteWeaponRequest model);
 
     @Async
     CompletableFuture<List<Weapon>> getAllWeapons();

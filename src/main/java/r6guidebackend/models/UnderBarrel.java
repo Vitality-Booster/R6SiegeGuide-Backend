@@ -12,12 +12,12 @@ import javax.persistence.*;
 @Setter
 @ToString
 @NoArgsConstructor
-public class UnderBarrel extends WeaponLoadoutItem {
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.AUTO)
-//    private int id;
-//
-//    @Column(unique = true)
-//    private String name;
+public class UnderBarrel{
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int id;
+
+    @Column(unique = true)
+    private String name;
     private String description;
 }

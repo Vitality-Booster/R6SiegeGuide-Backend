@@ -1,4 +1,4 @@
-package r6guidebackend.models;
+package r6guidebackend.models.responses;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

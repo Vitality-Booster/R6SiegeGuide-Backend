@@ -51,13 +51,13 @@ public class UserController {
         }
     }
 
-    @PostMapping("/verifyToken")
+    @PostMapping("/verify-token")
     public ResponseEntity verifyToken(@RequestBody VerifyTokenRequest model) {
         try {
-            userService.verifyUserByToken(model).get();
-            return ResponseEntity.status(HttpStatus.OK).body(null);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            var response = userService.verifyUserByToken(model).get();
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
         }
     }
 

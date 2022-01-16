@@ -38,7 +38,7 @@ public interface IUserService {
     CompletableFuture<CustomTokenResponse> loginUser(LoginRequest model) throws Exception;
 
     @Async
-    CompletableFuture<Void> verifyUserByToken(VerifyTokenRequest model) throws Exception;
+    CompletableFuture<CustomTokenResponse> verifyUserByToken(VerifyTokenRequest model) throws Exception;
 
 //    @Async
 //    CompletableFuture<GetTokenResponse> createCustomToken(GetTokenRequest model) throws Exception;

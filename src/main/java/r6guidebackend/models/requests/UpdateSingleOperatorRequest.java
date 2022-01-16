@@ -1,16 +1,14 @@
-package r6guidebackend.models;
+package r6guidebackend.models.requests;
+
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
-
 @Getter
 @Setter
 @NoArgsConstructor
 public class UpdateSingleOperatorRequest {
-    private String name;
     private String side;
     private String specialUnit;
     private int healthPoints;
