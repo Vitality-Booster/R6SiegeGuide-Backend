@@ -3,10 +3,7 @@ package r6guidebackend.models;
 import lombok.*;
 import org.hibernate.Hibernate;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @Getter
@@ -18,6 +15,8 @@ public class Gadget {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
+
+    @Column(unique = true)
     private String name;
     private String type; //type can be equal to "attacking" or "defensive"
     private String description;

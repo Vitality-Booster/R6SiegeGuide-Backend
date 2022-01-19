@@ -2,7 +2,10 @@ package r6guidebackend.controllers;
 
 import r6guidebackend.models.User;
 import r6guidebackend.models.requests.GetTokenRequest;
+import r6guidebackend.models.requests.LoginRequest;
 import r6guidebackend.models.requests.RegisterRequest;
+import r6guidebackend.models.requests.VerifyTokenRequest;
+import r6guidebackend.models.responses.CustomTokenResponse;
 import r6guidebackend.repositories.IUserRepository;
 import r6guidebackend.services.interfaces.IUserService;
 import org.springframework.http.HttpStatus;
@@ -24,7 +27,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity loginUser(@RequestBody User model) {
+    public ResponseEntity loginUser(@RequestBody LoginRequest model) {
         try {
             var response = userService.loginUser(model).get();
 
@@ -38,9 +41,12 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity registerUser(@RequestBody RegisterRequest model) {
         try {
-            userService.registerUser(model);
+            System.out.println(model);
+            var beforeResponse = userService.registerUser(model);
+            System.out.println("in real code: " + beforeResponse);
+            var response = beforeResponse.get();
             
-            return ResponseEntity.status(HttpStatus.OK).body(null);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
         }
         catch(Exception ex) {
             ex.printStackTrace();
@@ -48,25 +54,13 @@ public class UserController {
         }
     }
 
-    @PostMapping("/verifyToken")
-    public ResponseEntity verifyToken(@RequestBody String token) {
+    @PostMapping("/verify-token")
+    public ResponseEntity verifyToken(@RequestBody VerifyTokenRequest model) {
         try {
-            User user = userService.verifyUserByToken(token).get();
-            return ResponseEntity.status(HttpStatus.OK).body(user);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            var response = userService.verifyUserByToken(model).get();
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
         }
     }
-
-//    @PostMapping("/getToken")
-//    public ResponseEntity getToken(@RequestBody GetTokenRequest model) {
-//        try {
-//            var response = userService.createCustomToken(model).get();
-//
-//            return ResponseEntity.status(HttpStatus.OK).body(response);
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
-//        }
-//    }
 }

@@ -1,11 +1,11 @@
 package r6guidebackend.models.requests;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
+@ToString
+@EqualsAndHashCode
 @NoArgsConstructor
 public class RegisterRequest {
     private String email;

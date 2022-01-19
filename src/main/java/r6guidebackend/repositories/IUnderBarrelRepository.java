@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface IUnderBarrelRepository extends JpaRepository<UnderBarrel, Integer> {
+    UnderBarrel findUnderBarrelByName(String name);
+    boolean deleteUnderBarrelByName(String name);
 }

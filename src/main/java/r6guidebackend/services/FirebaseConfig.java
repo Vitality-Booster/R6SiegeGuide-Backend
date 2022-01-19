@@ -27,6 +27,7 @@ public class FirebaseConfig implements IFirebaseConfig {
         try {
             options = FirebaseOptions.builder()
                     .setCredentials(GoogleCredentials.fromStream(createFirebaseCredential()))
+                    .setStorageBucket(environment.getRequiredProperty("FIREBASE_STORAGE_BUCKET"))
                     //.setDatabaseUrl()
                     .build();
         } catch (Exception e) {

@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface IWeaponRepository extends JpaRepository<Weapon, Integer> {
+    Weapon findWeaponByName(String name);
+    boolean deleteWeaponByName(String name);
 }

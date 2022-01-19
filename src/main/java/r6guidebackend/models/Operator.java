@@ -19,8 +19,9 @@ public class Operator
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
+
+    @Column(unique=true)
     private String name;
-    private int health;
     private String side;
     private String specialUnit;
     private int healthPoints;
@@ -29,13 +30,15 @@ public class Operator
     private String nationality;
     private String uniqueAbility;
     @ManyToOne
-    @JoinColumn(name = "primary_weapon_1_id", nullable = false)
+//    @JoinColumn(name = "primary_weapon_1_id", nullable = false)
+    @JoinColumn(name = "primary_weapon_1_id")
     private Weapon primaryWeapon1;
     @ManyToOne
     @JoinColumn(name = "primary_weapon_2_id")
     private Weapon primaryWeapon2;
     @ManyToOne
-    @JoinColumn(name = "secondary_weapon_1_id", nullable = false)
+//    @JoinColumn(name = "secondary_weapon_1_id", nullable = false)
+    @JoinColumn(name = "secondary_weapon_1_id")
     private Weapon secondaryWeapon1;
     @ManyToOne
     @JoinColumn(name = "secondary_weapon_2_id")
@@ -51,4 +54,10 @@ public class Operator
     private String countryOfBirth;
     private String cityOfBirth;
     private String biography;
+
+    public Operator(String name, String side, String specialUnit) {
+        this.name = name;
+        this.side = side;
+        this.specialUnit = specialUnit;
+    }
 }
