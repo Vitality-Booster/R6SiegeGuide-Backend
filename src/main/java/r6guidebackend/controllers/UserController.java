@@ -41,7 +41,10 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity registerUser(@RequestBody RegisterRequest model) {
         try {
-            var response = userService.registerUser(model).get();
+            System.out.println(model);
+            var beforeResponse = userService.registerUser(model);
+            System.out.println("in real code: " + beforeResponse);
+            var response = beforeResponse.get();
             
             return ResponseEntity.status(HttpStatus.OK).body(response);
         }
@@ -60,16 +63,4 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
         }
     }
-
-//    @PostMapping("/getToken")
-//    public ResponseEntity getToken(@RequestBody GetTokenRequest model) {
-//        try {
-//            var response = userService.createCustomToken(model).get();
-//
-//            return ResponseEntity.status(HttpStatus.OK).body(response);
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
-//        }
-//    }
 }

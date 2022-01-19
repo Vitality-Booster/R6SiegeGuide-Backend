@@ -1,11 +1,10 @@
 package r6guidebackend.controllers;
 
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import r6guidebackend.models.requests.UpdateSingleOperatorRequest;
-import r6guidebackend.models.responses.GetAllNamesResponse;
+import r6guidebackend.models.responses.GetListOfNamesResponse;
 import r6guidebackend.models.Operator;
 import r6guidebackend.services.interfaces.IOperatorService;
 
@@ -33,7 +32,7 @@ public class OperatorController {
     @GetMapping("/get-all-names")
     public ResponseEntity getAllOperatorNames() {
         try {
-            GetAllNamesResponse response = operatorService.getAllNames().get();
+            GetListOfNamesResponse response = operatorService.getAllNames().get();
 
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception ex) {

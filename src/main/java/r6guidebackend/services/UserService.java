@@ -99,22 +99,22 @@ public class UserService implements IUserService {
 
     @Override
     public CompletableFuture<CustomTokenResponse> registerUser(RegisterRequest model) throws Exception {
-        String uid = generateUid();
-
-        UserRecord.CreateRequest createRequest = new UserRecord.CreateRequest();
-        createRequest.setUid(uid);
-        createRequest.setEmail(model.getEmail());
-        createRequest.setPassword(model.getPassword());
-        FirebaseAuth.getInstance().createUser(createRequest);
-
-        // only if Firebase doesn't throw any exception then we will create a user in the database
-        User user = new User(model.getFullName(), model.getEmail(), model.getUsername());
-        userRepository.save(user);
-
-        String customToken = createCustomToken(user).get();
+//        String uid = generateUid();
+//
+//        UserRecord.CreateRequest createRequest = new UserRecord.CreateRequest();
+//        createRequest.setUid(uid);
+//        createRequest.setEmail(model.getEmail());
+//        createRequest.setPassword(model.getPassword());
+//        FirebaseAuth.getInstance().createUser(createRequest);
+//
+//        // only if Firebase doesn't throw any exception then we will create a user in the database
+//        User user = new User(model.getFullName(), model.getEmail(), model.getUsername());
+//        userRepository.save(user);
+//
+//        String customToken = createCustomToken(user).get();
 
         CustomTokenResponse resp = new CustomTokenResponse();
-        resp.setToken(customToken);
+        resp.setToken("customToken");
 
         return CompletableFuture.completedFuture(resp);
     }

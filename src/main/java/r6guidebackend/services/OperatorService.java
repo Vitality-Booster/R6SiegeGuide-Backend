@@ -1,33 +1,46 @@
 package r6guidebackend.services;
 
 import javassist.NotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import r6guidebackend.models.*;
-import r6guidebackend.models.requests.RegisterRequest;
+import r6guidebackend.models.requests.GetOperatorsFromOneSideRequest;
+import r6guidebackend.models.requests.GetOperatorsFromSpecialUnitRequest;
 import r6guidebackend.models.requests.UpdateSingleOperatorRequest;
-import r6guidebackend.models.requests.VerifyTokenRequest;
-import r6guidebackend.models.responses.GetAllNamesResponse;
+import r6guidebackend.models.responses.GetListOfNamesResponse;
 import r6guidebackend.repositories.IGadgetRepository;
 import r6guidebackend.repositories.IOperatorRepository;
 import r6guidebackend.repositories.IWeaponRepository;
 import r6guidebackend.services.interfaces.IOperatorService;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @Service
 public class OperatorService implements IOperatorService {
-    private final IOperatorRepository operatorRepository;
-    private final IGadgetRepository gadgetRepository;
-    private final IWeaponRepository weaponRepository;
+//    private final IOperatorRepository operatorRepository;
+//    private final IGadgetRepository gadgetRepository;
+//    private final IWeaponRepository weaponRepository;
+//
+//    @Autowired
+//    public OperatorService(IOperatorRepository operatorRepository,
+//                           IGadgetRepository gadgetRepository,
+//                           IWeaponRepository weaponRepository) {
+//        this.operatorRepository = operatorRepository;
+//        this.gadgetRepository = gadgetRepository;
+//        this.weaponRepository = weaponRepository;
+//    }
 
-    public OperatorService(IOperatorRepository operatorRepository,
-                           IGadgetRepository gadgetRepository,
-                           IWeaponRepository weaponRepository) {
-        this.operatorRepository = operatorRepository;
-        this.gadgetRepository = gadgetRepository;
-        this.weaponRepository = weaponRepository;
-    }
+    @Autowired
+    private IOperatorRepository operatorRepository;
+
+    @Autowired
+    private IGadgetRepository gadgetRepository;
+
+    @Autowired
+    private IWeaponRepository weaponRepository;
 
     @Override
     public CompletableFuture<Operator> getSingleOperator(String name) throws Exception {
@@ -40,10 +53,17 @@ public class OperatorService implements IOperatorService {
     }
 
     @Override
-    public CompletableFuture<GetAllNamesResponse> getAllNames() {
-        GetAllNamesResponse resp = new GetAllNamesResponse();
+    public CompletableFuture<GetListOfNamesResponse> getAllNames()  throws Exception{
+        GetListOfNamesResponse resp = new GetListOfNamesResponse();
+        List<Operator> operators = operatorRepository.findAll();
 
-        operatorRepository.findAll().stream().forEach(operator -> resp.getNames().add(operator.getName()));
+        if (operators == null || operators.isEmpty()) {
+            throw new NotFoundException("There were no any operators found");
+        }
+
+        operators.forEach(operator -> {
+            resp.getNames().add(operator.getName());
+        });
         return CompletableFuture.completedFuture(resp);
     }
 
@@ -128,5 +148,41 @@ public class OperatorService implements IOperatorService {
         operatorRepository.save(operator);
 
         return CompletableFuture.runAsync(() -> {});
+    }
+
+    @Override
+    public CompletableFuture<GetListOfNamesResponse> getAllOperatorsFromSpecialUnit(GetOperatorsFromSpecialUnitRequest model)  throws Exception{
+        List<Operator> operators = operatorRepository.findAllBySpecialUnit(model.getSpecialUnit());
+
+        if (operators == null || operators.isEmpty()) {
+            throw new NotFoundException("There are no any operators in Special Unit: " + model.getSpecialUnit());
+        }
+
+        ArrayList<String> operatorNames = new ArrayList<>();
+
+        operators.forEach(o -> {operatorNames.add(o.getName());});
+
+        GetListOfNamesResponse response = new GetListOfNamesResponse();
+        response.setNames(operatorNames);
+
+        return CompletableFuture.completedFuture(response);
+    }
+
+    @Override
+    public CompletableFuture<GetListOfNamesResponse> getAllOperatorsFromOneSide(GetOperatorsFromOneSideRequest model) throws Exception{
+        List<Operator> operators = operatorRepository.findAllBySide(model.getSide());
+
+        if (operators == null || operators.isEmpty()) {
+            throw new NotFoundException("There are no any operators in Special Unit: " + model.getSide());
+        }
+
+        ArrayList<String> operatorNames = new ArrayList<>();
+
+        operators.forEach(o -> {operatorNames.add(o.getName());});
+
+        GetListOfNamesResponse response = new GetListOfNamesResponse();
+        response.setNames(operatorNames);
+
+        return CompletableFuture.completedFuture(response);
     }
 }
