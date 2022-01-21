@@ -1,6 +1,7 @@
 package r6guidebackend.services.interfaces;
 
 import org.springframework.scheduling.annotation.Async;
+import r6guidebackend.models.requests.CreateNewOperatorRequest;
 import r6guidebackend.models.requests.GetOperatorsFromOneSideRequest;
 import r6guidebackend.models.requests.UpdateSingleOperatorRequest;
 import r6guidebackend.models.responses.GetListOfNamesResponse;
@@ -27,4 +28,7 @@ public interface IOperatorService {
 
     @Async
     CompletableFuture<GetListOfNamesResponse> getAllOperatorsFromOneSide(GetOperatorsFromOneSideRequest model) throws Exception;
+
+    @Async
+    CompletableFuture<Void> createNewOperator(String name, CreateNewOperatorRequest model) throws Exception;
 }

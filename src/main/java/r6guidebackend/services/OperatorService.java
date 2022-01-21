@@ -4,6 +4,7 @@ import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import r6guidebackend.models.*;
+import r6guidebackend.models.requests.CreateNewOperatorRequest;
 import r6guidebackend.models.requests.GetOperatorsFromOneSideRequest;
 import r6guidebackend.models.requests.GetOperatorsFromSpecialUnitRequest;
 import r6guidebackend.models.requests.UpdateSingleOperatorRequest;
@@ -15,6 +16,7 @@ import r6guidebackend.services.interfaces.IOperatorService;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -81,36 +83,7 @@ public class OperatorService implements IOperatorService {
         if (model.getDifficultyPoints() != 0) {
             operator.setDifficultyPoints(model.getDifficultyPoints());
         }
-        if (model.getGadget1Name() != null) {
-            Gadget gadget = gadgetRepository.findGadgetByName(model.getGadget1Name());
-            assert gadget != null : "Gadget with name" + model.getGadget1Name() + "exist";
-            operator.setGadget1(gadget);
-        }
-        if (model.getGadget2Name() != null) {
-            Gadget gadget = gadgetRepository.findGadgetByName(model.getGadget2Name());
-            assert gadget != null : "Gadget with name" + model.getGadget2Name() + "exist";
-            operator.setGadget2(gadget);
-        }
-        if (model.getPrimaryWeapon1Name() != null) {
-            Weapon weapon = weaponRepository.findWeaponByName(model.getPrimaryWeapon1Name());
-            assert weapon != null : "Weapon with name" + model.getPrimaryWeapon1Name() + "exist";
-            operator.setPrimaryWeapon1(weapon);
-        }
-        if (model.getPrimaryWeapon2Name() != null) {
-            Weapon weapon = weaponRepository.findWeaponByName(model.getPrimaryWeapon2Name());
-            assert weapon != null : "Weapon with name" + model.getPrimaryWeapon2Name() + "exist";
-            operator.setPrimaryWeapon2(weapon);
-        }
-        if (model.getSecondaryWeapon1Name() != null) {
-            Weapon weapon = weaponRepository.findWeaponByName(model.getSecondaryWeapon1Name());
-            assert weapon != null : "Weapon with name" + model.getSecondaryWeapon1Name() + "exist";
-            operator.setSecondaryWeapon1(weapon);
-        }
-        if (model.getSecondaryWeapon2Name() != null) {
-            Weapon weapon = weaponRepository.findWeaponByName(model.getSecondaryWeapon2Name());
-            assert weapon != null : "Weapon with name" + model.getSecondaryWeapon2Name() + "exist";
-            operator.setSecondaryWeapon2(weapon);
-        }
+        setGadgetsAndWeapons(operator, model.getGadget1Name(), model.getGadget2Name(), model.getPrimaryWeapon1Name(), model.getPrimaryWeapon2Name(), model.getSecondaryWeapon1Name(), model.getSecondaryWeapon2Name());
         if (model.getHealthPoints() != 0) {
             operator.setHealthPoints(model.getHealthPoints());
         }
@@ -172,5 +145,69 @@ public class OperatorService implements IOperatorService {
         response.setNames(operatorNames);
 
         return CompletableFuture.completedFuture(response);
+    }
+
+    @Override
+    public CompletableFuture<Void> createNewOperator(String name, CreateNewOperatorRequest model) throws Exception {
+        Operator operator = new Operator();
+
+        if (operatorRepository.findOperatorByName(name) != null) {
+            throw new IllegalArgumentException("An operator with name " + name + "already exists");
+        }
+        operator.setName(name);
+        operator.setSide(model.getSide());
+        operator.setSpecialUnit(model.getSpecialUnit());
+        operator.setHealthPoints(model.getHealthPoints());
+        operator.setSpeedPoints(model.getSpeedPoints());
+        operator.setDifficultyPoints(model.getDifficultyPoints());
+        operator.setNationality(model.getNationality());
+        operator.setUniqueAbility(model.getUniqueAbility());
+        operator.setRealFullName(model.getRealFullName());
+        operator.setDateOfBirth(SimpleDateFormat.getInstance().parse(model.getDateOfBirth()));
+        operator.setCountryOfBirth(model.getCountryOfBirth());
+        operator.setCityOfBirth(model.getCityOfBirth());
+        operator.setBiography(model.getBiography());
+
+        setGadgetsAndWeapons(operator, model.getGadget1Name(), model.getGadget2Name(),
+                model.getPrimaryWeapon1Name(), model.getPrimaryWeapon2Name(),
+                model.getSecondaryWeapon1Name(), model.getSecondaryWeapon2Name());
+
+        return CompletableFuture.runAsync(() -> {});
+    }
+
+    private void setGadgetsAndWeapons(Operator operator, String gadget1Name, String gadget2Name,
+                                      String primaryWeapon1Name, String primaryWeapon2Name,
+                                      String secondaryWeapon1Name, String secondaryWeapon2Name) {
+        if (gadget1Name != null) {
+            Gadget gadget = gadgetRepository.findGadgetByName(gadget1Name);
+            assert gadget != null : "Gadget with name " + gadget1Name + " does not exist";
+            operator.setGadget1(gadget);
+        }
+        if (gadget2Name != null) {
+            Gadget gadget = gadgetRepository.findGadgetByName(gadget2Name);
+            assert gadget != null : "Gadget with name " + gadget2Name + " does not exist";
+            operator.setGadget2(gadget);
+        }
+        if (primaryWeapon1Name != null) {
+            Weapon weapon = weaponRepository.findWeaponByName(primaryWeapon1Name);
+            assert weapon != null : "Weapon with name" + primaryWeapon1Name + "exist";
+            operator.setPrimaryWeapon1(weapon);
+        }
+        if (primaryWeapon2Name != null) {
+            Weapon weapon = weaponRepository.findWeaponByName(primaryWeapon2Name);
+            assert weapon != null : "Weapon with name " + primaryWeapon2Name + " does not exist";
+            operator.setPrimaryWeapon2(weapon);
+        }
+        if (secondaryWeapon1Name != null) {
+            Weapon weapon = weaponRepository.findWeaponByName(secondaryWeapon1Name);
+            assert weapon != null : "Weapon with name " + secondaryWeapon1Name + " dose not exist";
+            operator.setSecondaryWeapon1(weapon);
+        }
+        if (secondaryWeapon2Name != null) {
+            Weapon weapon = weaponRepository.findWeaponByName(secondaryWeapon2Name);
+            assert weapon != null : "Weapon with name " + secondaryWeapon2Name + " does not exist";
+            operator.setSecondaryWeapon2(weapon);
+
+        }
     }
 }
