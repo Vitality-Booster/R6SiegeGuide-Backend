@@ -20,18 +20,6 @@ import java.util.concurrent.CompletableFuture;
 
 @Service
 public class OperatorService implements IOperatorService {
-//    private final IOperatorRepository operatorRepository;
-//    private final IGadgetRepository gadgetRepository;
-//    private final IWeaponRepository weaponRepository;
-//
-//    @Autowired
-//    public OperatorService(IOperatorRepository operatorRepository,
-//                           IGadgetRepository gadgetRepository,
-//                           IWeaponRepository weaponRepository) {
-//        this.operatorRepository = operatorRepository;
-//        this.gadgetRepository = gadgetRepository;
-//        this.weaponRepository = weaponRepository;
-//    }
 
     @Autowired
     private IOperatorRepository operatorRepository;
