@@ -2,20 +2,24 @@ package r6guidebackend.controllers;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import r6guidebackend.models.requests.UpdateSingleOperatorRequest;
 import r6guidebackend.models.responses.GetListOfNamesResponse;
 import r6guidebackend.models.Operator;
 import r6guidebackend.services.interfaces.IOperatorService;
+import r6guidebackend.services.interfaces.IUserChecker;
 
 @CrossOrigin
 @RestController
 @RequestMapping("/operators")
 public class OperatorController {
     private final IOperatorService operatorService;
+    private final IUserChecker userChecker;
     
-    public OperatorController(IOperatorService operatorService) {
+    public OperatorController(IOperatorService operatorService, IUserChecker userChecker) {
         this.operatorService = operatorService;
+        this.userChecker = userChecker;
     }
     
     @GetMapping("/{name}")
@@ -29,9 +33,11 @@ public class OperatorController {
         }
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/get-all-names")
     public ResponseEntity getAllOperatorNames() {
         try {
+            userChecker.checkIfAdminServerSide();
             GetListOfNamesResponse response = operatorService.getAllNames().get();
 
             return ResponseEntity.status(HttpStatus.OK).body(response);

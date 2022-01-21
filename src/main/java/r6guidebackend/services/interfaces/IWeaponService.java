@@ -2,23 +2,21 @@ package r6guidebackend.services.interfaces;
 
 import org.springframework.scheduling.annotation.Async;
 import r6guidebackend.models.Weapon;
-import r6guidebackend.models.requests.GetWeaponRequest;
+import r6guidebackend.models.requests.UpdateSingleWeaponRequest;
+import r6guidebackend.models.responses.GetListOfNamesResponse;
 
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public interface IWeaponService {
     @Async
-    CompletableFuture<Weapon> getWeapon(GetWeaponRequest model);
+    CompletableFuture<Weapon> getWeapon(String name) throws Exception;
 
     @Async
-    CompletableFuture<Void> deleteWeapon(GetWeaponRequest.DeleteWeaponRequest model);
+    CompletableFuture<Void> deleteWeapon(String name) throws Exception;
 
     @Async
-    CompletableFuture<List<Weapon>> getAllWeapons();
+    CompletableFuture<GetListOfNamesResponse> getAllWeaponNames() throws Exception;
 
-    // Decide if I should have a lot of DTOs or should I just pass DAO models as they are
-    // As a possible solution for some models, I may use generics
-//    @Async
-//    CompletableFuture<>
+    @Async
+    CompletableFuture<Void> updateSingleWeapon(String name, UpdateSingleWeaponRequest model) throws Exception;
 }
