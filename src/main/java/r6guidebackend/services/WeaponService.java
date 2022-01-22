@@ -4,8 +4,10 @@ import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import r6guidebackend.models.Weapon;
+import r6guidebackend.models.requests.CreateNewWeaponRequest;
 import r6guidebackend.models.requests.UpdateSingleWeaponRequest;
 import r6guidebackend.models.responses.GetListOfNamesResponse;
+import r6guidebackend.models.responses.GetMapOfWeaponsResponse;
 import r6guidebackend.repositories.IWeaponRepository;
 import r6guidebackend.services.interfaces.IWeaponService;
 
@@ -38,10 +40,10 @@ public class WeaponService implements IWeaponService {
     }
 
     @Override
-    public CompletableFuture<GetListOfNamesResponse> getAllWeaponNames() throws Exception{
-        GetListOfNamesResponse response = new GetListOfNamesResponse();
+    public CompletableFuture<GetMapOfWeaponsResponse> getAllWeaponNames() throws Exception{
+        GetMapOfWeaponsResponse response = new GetMapOfWeaponsResponse();
 
-        repository.findAll().forEach(weapon -> response.getNames().add(weapon.getName()));
+        repository.findAll().forEach(weapon -> response.getNameAndType().put(weapon.getName(), weapon.getType()));
 
         return CompletableFuture.completedFuture(response);
     }
@@ -63,6 +65,22 @@ public class WeaponService implements IWeaponService {
         if (model.getMagazine() != 0) {
             weapon.setMagazine(model.getMagazine());
         }
+
+        repository.save(weapon);
+
+        return CompletableFuture.runAsync(() -> {});
+    }
+
+    @Override
+    public CompletableFuture<Void> createNewWeapon(String name, CreateNewWeaponRequest model) throws Exception {
+        Weapon weapon = new Weapon();
+        if(repository.findWeaponByName(name) != null) {
+            throw new IllegalArgumentException("The weapon with name " + name + " already exists");
+        }
+        weapon.setName(name);
+        weapon.setType(model.getType());
+        weapon.setDamage(model.getDamage());
+        weapon.setMagazine(model.getMagazine());
 
         repository.save(weapon);
 

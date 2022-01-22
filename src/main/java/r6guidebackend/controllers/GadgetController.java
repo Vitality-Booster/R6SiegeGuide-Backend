@@ -1,31 +1,74 @@
 package r6guidebackend.controllers;
 
-import r6guidebackend.models.Gadget;
-import r6guidebackend.repositories.IGadgetRepository;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import r6guidebackend.models.requests.CreateNewGadgetRequest;
+import r6guidebackend.models.requests.UpdateSingleGadgetRequest;
+import r6guidebackend.services.interfaces.IGadgetService;
 
 @RestController
+@CrossOrigin
+@RequestMapping("/gadgets")
 public class GadgetController {
+    private final IGadgetService gadgetService;
 
-    private final IGadgetRepository IGadgetRepository;
-
-    public GadgetController(IGadgetRepository IGadgetRepository) {
-        this.IGadgetRepository = IGadgetRepository;
+    public GadgetController(IGadgetService gadgetService) {
+        this.gadgetService = gadgetService;
     }
 
-    @PostMapping("/gadgets/")
-    public String AddGadget(Gadget gadget) {
-        IGadgetRepository.save(gadget);
-        return gadget.getName();
+    @GetMapping("/get-all-names")
+    public ResponseEntity getAllGadgetNamesAndTypes() {
+        try {
+            var response = gadgetService.getAllGadgets().get();
+
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch(Exception ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
     }
 
-//    @GetMapping("/gadgets/{id}")
-//    public Gadget GetGadget(@PathVariable int id) {
-//        Optional<Gadget> optionalGadget = gadgetRepository.findById(id);
-//        if (!optionalGadget.isPresent()) {
-//            return null
-//        }
-//        return (Gadget)gadget;
-//    }
+    @GetMapping("/{name}")
+    public ResponseEntity getSingleGadget(@PathVariable String name) {
+        try {
+            var response = gadgetService.getGadget(name).get();
+
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch(Exception ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
+    }
+
+    @DeleteMapping("/{name}")
+    public ResponseEntity deleteSingleGadget(@PathVariable String name) {
+        try {
+            gadgetService.deleteGadget(name);
+
+            return ResponseEntity.status(HttpStatus.OK).body(null);
+        } catch(Exception ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
+    }
+
+    @PutMapping("/{name}")
+    public ResponseEntity updateSingleGadget(@PathVariable String name, @RequestBody UpdateSingleGadgetRequest model) {
+        try {
+            gadgetService.updateSingleGadget(name, model);
+
+            return ResponseEntity.status(HttpStatus.OK).body(null);
+        } catch(Exception ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
+    }
+
+    @PostMapping("/{name}")
+    public ResponseEntity createNewGadget(@PathVariable String name, @RequestBody CreateNewGadgetRequest model) {
+        try {
+            gadgetService.createNewGadget(name, model);
+
+            return ResponseEntity.status(HttpStatus.OK).body(null);
+        } catch(Exception ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
+    }
 }
