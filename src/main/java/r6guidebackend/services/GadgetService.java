@@ -3,11 +3,12 @@ package r6guidebackend.services;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import r6guidebackend.exceptions.AlreadyExistException;
 import r6guidebackend.models.Gadget;
-import r6guidebackend.models.Weapon;
+import r6guidebackend.models.previews.GadgetPreview;
 import r6guidebackend.models.requests.CreateNewGadgetRequest;
 import r6guidebackend.models.requests.UpdateSingleGadgetRequest;
-import r6guidebackend.models.responses.GetMapOfGadgetsResponse;
+import r6guidebackend.models.responses.GetListOfGadgetPreviewsResponse;
 import r6guidebackend.repositories.IGadgetRepository;
 import r6guidebackend.services.interfaces.IGadgetService;
 
@@ -40,10 +41,10 @@ public class GadgetService implements IGadgetService {
     }
 
     @Override
-    public CompletableFuture<GetMapOfGadgetsResponse> getAllGadgets() throws Exception {
-        GetMapOfGadgetsResponse response = new GetMapOfGadgetsResponse();
+    public CompletableFuture<GetListOfGadgetPreviewsResponse> getAllGadgets() throws Exception {
+        GetListOfGadgetPreviewsResponse response = new GetListOfGadgetPreviewsResponse();
         
-        repository.findAll().forEach(gadget -> response.getNameAndTypes().put(gadget.getName(), gadget.getType()));
+        repository.findAll().forEach(gadget -> response.getNamesAndTypes().add(new GadgetPreview(gadget)));
         
         return CompletableFuture.completedFuture(response);
     }
@@ -69,10 +70,10 @@ public class GadgetService implements IGadgetService {
     }
 
     @Override
-    public CompletableFuture<Void> createNewGadget(String name, CreateNewGadgetRequest model) throws Exception {
+    public CompletableFuture<Void> createNewGadget(String name, CreateNewGadgetRequest model) throws AlreadyExistException {
         Gadget gadget = new Gadget();
         if(repository.findGadgetByName(name) != null) {
-            throw new IllegalArgumentException("The gadget with name " + name + " already exists");
+            throw new AlreadyExistException("The gadget with name " + name + " already exists");
         }
         gadget.setName(name);
         gadget.setType(model.getType());

@@ -5,8 +5,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import r6guidebackend.models.requests.CreateNewWeaponRequest;
 import r6guidebackend.models.requests.UpdateSingleWeaponRequest;
-import r6guidebackend.services.WeaponService;
-import r6guidebackend.services.interfaces.IUserService;
 import r6guidebackend.services.interfaces.IWeaponService;
 
 @RestController

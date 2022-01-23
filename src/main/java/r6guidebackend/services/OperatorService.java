@@ -3,6 +3,7 @@ package r6guidebackend.services;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import r6guidebackend.exceptions.AlreadyExistException;
 import r6guidebackend.models.*;
 import r6guidebackend.models.requests.CreateNewOperatorRequest;
 import r6guidebackend.models.requests.GetOperatorsFromOneSideRequest;
@@ -51,9 +52,7 @@ public class OperatorService implements IOperatorService {
             throw new NotFoundException("There were no any operators found");
         }
 
-        operators.forEach(operator -> {
-            resp.getNames().add(operator.getName());
-        });
+        operators.forEach(operator -> resp.getNames().add(operator.getName()));
         return CompletableFuture.completedFuture(resp);
     }
 
@@ -121,7 +120,7 @@ public class OperatorService implements IOperatorService {
 
         ArrayList<String> operatorNames = new ArrayList<>();
 
-        operators.forEach(o -> {operatorNames.add(o.getName());});
+        operators.forEach(o -> operatorNames.add(o.getName()));
 
         GetListOfNamesResponse response = new GetListOfNamesResponse();
         response.setNames(operatorNames);
@@ -139,7 +138,7 @@ public class OperatorService implements IOperatorService {
 
         ArrayList<String> operatorNames = new ArrayList<>();
 
-        operators.forEach(o -> {operatorNames.add(o.getName());});
+        operators.forEach(o -> operatorNames.add(o.getName()));
 
         GetListOfNamesResponse response = new GetListOfNamesResponse();
         response.setNames(operatorNames);
@@ -151,9 +150,11 @@ public class OperatorService implements IOperatorService {
     public CompletableFuture<Void> createNewOperator(String name, CreateNewOperatorRequest model) throws Exception {
         Operator operator = new Operator();
 
+        System.out.println("Got there");
         if (operatorRepository.findOperatorByName(name) != null) {
-            throw new IllegalArgumentException("An operator with name " + name + "already exists");
+            throw new AlreadyExistException("An operator with name " + name + "already exists");
         }
+        System.out.println("passed if statement");
         operator.setName(name);
         operator.setSide(model.getSide());
         operator.setSpecialUnit(model.getSpecialUnit());
@@ -163,51 +164,74 @@ public class OperatorService implements IOperatorService {
         operator.setNationality(model.getNationality());
         operator.setUniqueAbility(model.getUniqueAbility());
         operator.setRealFullName(model.getRealFullName());
-        operator.setDateOfBirth(SimpleDateFormat.getInstance().parse(model.getDateOfBirth()));
+        System.out.println("got to birthdate");
+        operator.setDateOfBirth(new SimpleDateFormat("yyyy-MM-dd").parse(model.getDateOfBirth()));
+        System.out.println("passed the birthdate");
         operator.setCountryOfBirth(model.getCountryOfBirth());
         operator.setCityOfBirth(model.getCityOfBirth());
         operator.setBiography(model.getBiography());
 
-        setGadgetsAndWeapons(operator, model.getGadget1Name(), model.getGadget2Name(),
-                model.getPrimaryWeapon1Name(), model.getPrimaryWeapon2Name(),
-                model.getSecondaryWeapon1Name(), model.getSecondaryWeapon2Name());
+
+        try {
+            setGadgetsAndWeapons(operator, model.getGadget1Name(), model.getGadget2Name(),
+                    model.getPrimaryWeapon1Name(), model.getPrimaryWeapon2Name(),
+                    model.getSecondaryWeapon1Name(), model.getSecondaryWeapon2Name());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        System.out.println(operator);
+        operatorRepository.save(operator);
 
         return CompletableFuture.runAsync(() -> {});
     }
 
     private void setGadgetsAndWeapons(Operator operator, String gadget1Name, String gadget2Name,
                                       String primaryWeapon1Name, String primaryWeapon2Name,
-                                      String secondaryWeapon1Name, String secondaryWeapon2Name) {
+                                      String secondaryWeapon1Name, String secondaryWeapon2Name) throws Exception{
+
         if (gadget1Name != null) {
             Gadget gadget = gadgetRepository.findGadgetByName(gadget1Name);
-            assert gadget != null : "Gadget with name " + gadget1Name + " does not exist";
+            if (gadget == null) {
+                throw new NotFoundException("Gadget with name " + gadget1Name + " does not exist");
+            }
             operator.setGadget1(gadget);
         }
         if (gadget2Name != null) {
             Gadget gadget = gadgetRepository.findGadgetByName(gadget2Name);
-            assert gadget != null : "Gadget with name " + gadget2Name + " does not exist";
+            if (gadget == null) {
+                throw new NotFoundException("Gadget with name " + gadget2Name + " does not exist");
+            }
             operator.setGadget2(gadget);
         }
         if (primaryWeapon1Name != null) {
             Weapon weapon = weaponRepository.findWeaponByName(primaryWeapon1Name);
-            assert weapon != null : "Weapon with name" + primaryWeapon1Name + "exist";
+            if (weapon == null) {
+                throw new NotFoundException("Gadget with name " + primaryWeapon1Name + " does not exist");
+            }
             operator.setPrimaryWeapon1(weapon);
         }
         if (primaryWeapon2Name != null) {
             Weapon weapon = weaponRepository.findWeaponByName(primaryWeapon2Name);
-            assert weapon != null : "Weapon with name " + primaryWeapon2Name + " does not exist";
+            if (weapon == null) {
+                throw new NotFoundException("Gadget with name " + primaryWeapon2Name + " does not exist");
+            }
             operator.setPrimaryWeapon2(weapon);
         }
         if (secondaryWeapon1Name != null) {
             Weapon weapon = weaponRepository.findWeaponByName(secondaryWeapon1Name);
-            assert weapon != null : "Weapon with name " + secondaryWeapon1Name + " dose not exist";
+            if (weapon == null) {
+                throw new NotFoundException("Gadget with name " + secondaryWeapon1Name + " does not exist");
+            }
             operator.setSecondaryWeapon1(weapon);
         }
         if (secondaryWeapon2Name != null) {
             Weapon weapon = weaponRepository.findWeaponByName(secondaryWeapon2Name);
-            assert weapon != null : "Weapon with name " + secondaryWeapon2Name + " does not exist";
+            if (weapon == null) {
+                throw new NotFoundException("Gadget with name " + secondaryWeapon2Name + " does not exist");
+            }
             operator.setSecondaryWeapon2(weapon);
-
         }
+        System.out.println("gets to the end");
     }
 }

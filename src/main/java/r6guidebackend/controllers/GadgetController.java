@@ -8,7 +8,7 @@ import r6guidebackend.models.requests.UpdateSingleGadgetRequest;
 import r6guidebackend.services.interfaces.IGadgetService;
 
 @RestController
-@CrossOrigin
+@CrossOrigin(origins = "*")
 @RequestMapping("/gadgets")
 public class GadgetController {
     private final IGadgetService gadgetService;
