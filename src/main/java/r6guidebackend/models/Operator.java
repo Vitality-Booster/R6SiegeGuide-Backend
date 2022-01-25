@@ -29,6 +29,7 @@ public class Operator
     private int difficultyPoints;
     private String nationality;
     private String uniqueAbility;
+    private int health = 0;
     @ManyToOne
 //    @JoinColumn(name = "primary_weapon_1_id", nullable = false)
     @JoinColumn(name = "primary_weapon_1_id")
@@ -53,6 +54,8 @@ public class Operator
     private Date dateOfBirth;
     private String countryOfBirth;
     private String cityOfBirth;
+
+    @Column(name = "biography", length = 2048)
     private String biography;
 
     public Operator(String name, String side, String specialUnit) {

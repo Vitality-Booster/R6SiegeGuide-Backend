@@ -99,21 +99,13 @@ public class UserService implements IUserService {
 
     @Override
     public CompletableFuture<CustomTokenResponse> registerUser(RegisterRequest model) throws Exception {
-//        String uid = generateUid();
-//
-//        UserRecord.CreateRequest createRequest = new UserRecord.CreateRequest();
-//        createRequest.setUid(uid);
-//        createRequest.setEmail(model.getEmail());
-//        createRequest.setPassword(model.getPassword());
-//        FirebaseAuth.getInstance().createUser(createRequest);
-//
-//        // only if Firebase doesn't throw any exception then we will create a user in the database
-//        User user = new User(model.getFullName(), model.getEmail(), model.getUsername());
-//        userRepository.save(user);
-//
-//        String customToken = createCustomToken(user).get();
-
         CustomTokenResponse resp = new CustomTokenResponse();
+
+        var user = userRepository.findUserByEmail(model.getEmail());
+
+        if (user == null) {
+            throw new NotFoundException("A user with this email does not exist");
+        }
         resp.setToken("customToken");
 
         return CompletableFuture.completedFuture(resp);
@@ -147,10 +139,7 @@ public class UserService implements IUserService {
     }
 
     public CompletableFuture<String> createCustomToken(User user) throws Exception{
-        System.out.println("Email: " + user.getEmail());
-
         String uid = FirebaseAuth.getInstance().getUserByEmail(user.getEmail()).getUid();
-        System.out.println("Uid: " + uid);
         Map<String, Object> additionalClaims = new HashMap<>();
         additionalClaims.put("admin", user.isAdmin());
 

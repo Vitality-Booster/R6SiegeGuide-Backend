@@ -3,9 +3,8 @@ package r6guidebackend.controllers;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import r6guidebackend.models.requests.CreateNewWeaponRequest;
 import r6guidebackend.models.requests.UpdateSingleWeaponRequest;
-import r6guidebackend.services.WeaponService;
-import r6guidebackend.services.interfaces.IUserService;
 import r6guidebackend.services.interfaces.IWeaponService;
 
 @RestController
@@ -55,6 +54,17 @@ public class WeaponController {
     public ResponseEntity updateSingleWeapon(@PathVariable String name, @RequestBody UpdateSingleWeaponRequest model) {
         try {
             weaponService.updateSingleWeapon(name, model);
+
+            return ResponseEntity.status(HttpStatus.OK).body(null);
+        } catch(Exception ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
+    }
+
+    @PostMapping("/{name}")
+    public ResponseEntity createNewWeapon(@PathVariable String name, @RequestBody CreateNewWeaponRequest model) {
+        try {
+            weaponService.createNewWeapon(name, model);
 
             return ResponseEntity.status(HttpStatus.OK).body(null);
         } catch(Exception ex) {

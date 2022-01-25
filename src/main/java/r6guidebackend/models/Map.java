@@ -18,6 +18,8 @@ public class Map {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
+
+    @Column(unique = true)
     private String name;
     private String info;
     private String locationCity;

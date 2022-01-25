@@ -2,8 +2,8 @@ package r6guidebackend.controllers;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import r6guidebackend.models.requests.CreateNewOperatorRequest;
 import r6guidebackend.models.requests.UpdateSingleOperatorRequest;
 import r6guidebackend.models.responses.GetListOfNamesResponse;
 import r6guidebackend.models.Operator;
@@ -33,7 +33,6 @@ public class OperatorController {
         }
     }
 
-    @PreAuthorize("isAuthenticated()")
     @GetMapping("/get-all-names")
     public ResponseEntity getAllOperatorNames() {
         try {
@@ -62,6 +61,17 @@ public class OperatorController {
                                                           @RequestBody UpdateSingleOperatorRequest model) {
         try {
             operatorService.updateSingleOperator(name, model);
+
+            return ResponseEntity.status(HttpStatus.OK).body(null);
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
+    }
+
+    @PostMapping("/{name}")
+    public ResponseEntity createNewOperator(@PathVariable String name, @RequestBody CreateNewOperatorRequest model) {
+        try {
+            operatorService.createNewOperator(name, model);
 
             return ResponseEntity.status(HttpStatus.OK).body(null);
         } catch (Exception ex) {
